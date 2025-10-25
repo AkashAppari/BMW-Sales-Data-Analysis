@@ -31,6 +31,7 @@ A comprehensive analysis of BMW's global sales performance spanning 15 years, de
 - **Scope**: Multiple regions, models, fuel types, and market segments
 - **Raw data**: `data/raw/BMW_Worldwide_Sales_Records_2010_2024.csv`
 - **Processed data**: `data/processed/` (cleaned and feature-engineered versions)
+- **Dataset link**: https://www.kaggle.com/datasets/ahmadrazakashif/bmw-worldwide-sales-records-20102024
 
 ---
 
