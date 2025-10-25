@@ -135,7 +135,7 @@ A comprehensive analysis of BMW's global sales performance spanning 15 years, de
 
 ### Prerequisites
 ```bash
-# Python 3.8+ required
+# Python 3.11+ recommended
 python --version
 ```
 
@@ -178,6 +178,11 @@ jupyter notebook
 - **Cleaned data**: `data/processed/BMW_Worldwide_Sales_Cleaned.csv`
 - **Feature-engineered data**: `data/processed/BMW_Worldwide_Sales_Features.csv`
 - **Visualizations**: `dashboards/*.png` (5 key charts)
+
+### VS Code Kernel Tip
+- If VS Code shows a warning that your Python is unsupported, select a supported kernel:
+   - In the notebook toolbar, click the Kernel name → choose a Python 3.11+ interpreter (venv recommended).
+   - Or Command Palette → "Notebook: Select Notebook Kernel".
 
 ---
 
