@@ -238,20 +238,6 @@ This project showcases:
 
 ---
 
-## 👤 Author
-
-**Data Analyst Portfolio Project**
-
-*This project demonstrates proficiency in end-to-end data analysis workflows, from raw data to business insights.*
-
----
-
-## 📝 License
-
-This is a portfolio project for educational and demonstration purposes.
-
----
-
 ## 🔗 Related Files
 
 - **Detailed Report**: See `reports/project_summary.md` for comprehensive analysis documentation
