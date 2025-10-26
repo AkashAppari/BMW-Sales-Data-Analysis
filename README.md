@@ -38,9 +38,9 @@ A comprehensive analysis of BMW's global sales performance spanning 15 years, de
 ## 🔍 Key Insights
 
 ### Market Performance
-- **Top Region**: Asia leads with the highest total sales volume
+- **Top Region**: Asia leads with 17.0% of global sales, closely followed by Europe (16.8%) and North America (16.7%)
 - **Top Model**: 7 Series is the best-performing model overall
-- **Average Price**: $75,035 across all vehicles
+- **Average Price**: $75,035 across all vehicles (tight bands: $74,657-$75,570 across segments)
 
 ### Green Vehicle Transition
 - **50.4%** of sales are now electric or hybrid vehicles
@@ -48,10 +48,10 @@ A comprehensive analysis of BMW's global sales performance spanning 15 years, de
 - Europe and North America lead in green vehicle preference
 
 ### Market Segmentation
-- **Entry Segment**: 45.8% (mass market appeal)
-- **Premium**: 27.0% (core BMW positioning)
+- **Entry Segment**: 45.8% (mass market appeal, largest volume driver)
+- **Premium**: 27.1% (core BMW positioning)
 - **Performance**: 17.8% (M-series and sport models)
-- **Ultra-Luxury**: 9.4% (7 Series and high-end variants)
+- **Ultra-Luxury**: 9.3% (7 Series and high-end variants, highest average price at $75,570)
 
 ### Vehicle Type Trends
 - **SUVs** show strongest growth trajectory
@@ -102,13 +102,25 @@ A comprehensive analysis of BMW's global sales performance spanning 15 years, de
 
 3. **Feature Engineering** (`notebooks/03_feature_engineering.ipynb`)
    - Create price categories (Budget → Luxury)
-   - Define market segments (Entry, Premium, Performance, Ultra-Luxury)
+   - Define market segments based on model positioning (Entry, Premium, Performance, Ultra-Luxury)
    - Calculate vehicle age and engine power categories
-   - Generate green vehicle indicators
+   - Generate green vehicle indicators (Electric/Hybrid classification)
    - Compute market share and performance metrics
-   - **Output**: `data/processed/BMW_Worldwide_Sales_Features.csv`
+   - **Key Findings**:
+     - Near-zero price-sales correlation overall (0.0), slight variations by segment
+     - Entry segment dominates with 45.8% market share
+     - Ultra-Luxury segment commands highest prices but smallest volume (9.3%)
+     - Green vehicles now account for 50.4% of all sales
+   - **Visualizations**: Market segment trends over time, average prices by segment, price vs sales analysis
+   - **Output**: `data/processed/BMW_Worldwide_Sales_Features.csv`, `data/processed/yearly_sales.csv`
 
-4. **Portfolio Summary** (`notebooks/portfolio_summary.ipynb`)
+4. **Time Series Forecasting** (`notebooks/04_forecasting.ipynb`)
+   - Prophet-based sales forecasting models
+   - Trend and seasonality decomposition
+   - Regional and model-level predictions
+   - Forecast validation and accuracy metrics
+
+5. **Portfolio Summary** (`notebooks/portfolio_summary.ipynb`)
    - Executive-level KPIs and metrics
    - Key visualizations for presentation
    - Business insights and recommendations
@@ -119,15 +131,19 @@ A comprehensive analysis of BMW's global sales performance spanning 15 years, de
 ## 💼 Business Recommendations
 
 **Strategic Priorities:**
-1. **Accelerate EV Portfolio**: Expand electric offerings in SUV segment to capture growing demand
-2. **Regional Customization**: Tailor product mix (SUVs for North America, premium sedans for Europe)
-3. **Premium Focus**: Continue investing in premium/ultra-luxury segments for margin optimization
-4. **Emerging Markets**: Increase entry-level model presence in high-growth regions
+1. **Accelerate EV Portfolio**: Expand electric offerings in SUV segment to capture growing demand (already at 50%+ adoption)
+2. **Regional Balance**: Maintain competitive presence across balanced regional markets (16-17% each)
+3. **Segment Strategy**: 
+   - Protect Entry segment (45.8% volume driver) with competitive pricing
+   - Enhance Ultra-Luxury differentiation (9.3% share, highest margins at $75,570 avg)
+   - Leverage tight price bands ($74,657-$75,570) to signal consistent quality
+4. **Price Positioning**: Near-zero price elasticity suggests strong brand loyalty - focus on value proposition over discounting
 
 **Data-Driven Operations:**
 - Use predictive analytics for demand forecasting and inventory optimization
-- Develop targeted marketing based on regional vehicle type preferences
-- Monitor market share trends by segment to identify competitive threats
+- Monitor segment-specific price sensitivity (slight variations: -0.022 to +0.015 correlation)
+- Track regional green vehicle adoption rates to guide EV production allocation
+- Leverage 7 Series performance insights to optimize flagship model marketing
 
 ---
 
@@ -171,13 +187,15 @@ jupyter notebook
 # 1. 01_data_cleaning.ipynb
 # 2. 02_eda.ipynb
 # 3. 03_feature_engineering.ipynb
-# 4. portfolio_summary.ipynb
+# 4. 04_forecasting.ipynb (optional - requires prophet)
+# 5. portfolio_summary.ipynb
 ```
 
 ### Generated Outputs
 - **Cleaned data**: `data/processed/BMW_Worldwide_Sales_Cleaned.csv`
 - **Feature-engineered data**: `data/processed/BMW_Worldwide_Sales_Features.csv`
-- **Visualizations**: `dashboards/*.png` (5 key charts)
+- **Yearly aggregated data**: `data/processed/yearly_sales.csv`
+- **Visualizations**: `dashboards/*.png` (5+ key charts)
 
 ### VS Code Kernel Tip
 - If VS Code shows a warning that your Python is unsupported, select a supported kernel:
@@ -194,7 +212,9 @@ See `requirements.txt` for exact versions. Core packages:
 - **matplotlib** - Data visualization
 - **seaborn** - Statistical visualization
 - **scikit-learn** - Feature engineering and machine learning utilities
+- **prophet** - Time series forecasting (used in 04_forecasting.ipynb)
 - **jupyter** - Interactive notebooks
+- **ipykernel** - Jupyter kernel for Python
 
 ---
 
@@ -209,11 +229,13 @@ BMW-Sales-Data-Analysis/
 │   │   └── BMW_Worldwide_Sales_Records_2010_2024.csv
 │   └── processed/                    # Cleaned and feature-engineered data
 │       ├── BMW_Worldwide_Sales_Cleaned.csv
-│       └── BMW_Worldwide_Sales_Features.csv
+│       ├── BMW_Worldwide_Sales_Features.csv
+│       └── yearly_sales.csv
 ├── notebooks/
 │   ├── 01_data_cleaning.ipynb        # Data cleaning pipeline
 │   ├── 02_eda.ipynb                  # Exploratory analysis
 │   ├── 03_feature_engineering.ipynb  # Feature creation
+│   ├── 04_forecasting.ipynb          # Time series forecasting with Prophet
 │   └── portfolio_summary.ipynb       # Executive summary notebook
 ├── dashboards/
 │   ├── sales_trends.png              # Global sales over time

@@ -10,8 +10,9 @@ This project does not commit large CSVs to the repository to keep it lightweight
 - Put the downloaded file here:
   - `data/raw/BMW_Worldwide_Sales_Records_2010_2024.csv`
 - The cleaning and feature engineering notebooks will generate processed files here:
-  - `data/processed/BMW_Worldwide_Sales_Cleaned.csv`
-  - `data/processed/BMW_Worldwide_Sales_Features.csv`
+  - `data/processed/BMW_Worldwide_Sales_Cleaned.csv` (from `01_data_cleaning.ipynb`)
+  - `data/processed/BMW_Worldwide_Sales_Features.csv` (from `03_feature_engineering.ipynb`)
+  - `data/processed/yearly_sales.csv` (from `03_feature_engineering.ipynb`)
 
 ## Notes
 - Raw and processed CSVs are intentionally gitignored.
