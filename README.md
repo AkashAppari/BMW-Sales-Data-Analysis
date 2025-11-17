@@ -89,7 +89,7 @@ All visualizations are saved in the `dashboards/` folder.
 
 1. **Download the project**
    ```bash
-   git clone <repository-url>
+   git clone github.com/AkashAppari/BMW-Sales-Data-Analysis
    cd BMW-Sales-Data-Analysis
    ```
 
