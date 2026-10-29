@@ -1,0 +1,98 @@
+name: Release
+
+# Every push to the default branch becomes a versioned GitHub release — the same
+# shape erate-manager publishes from deploy.sh, adapted for repos that have no
+# deploy step: the push itself is the release event.
+#
+# The version is derived from the releases that already exist, never stored in a
+# file, so publishing one changes nothing in the working tree:
+#
+#   ordinary push            patch bump   v0.1.0 -> v0.1.1
+#   [minor] in the message   minor bump   v0.1.1 -> v0.2.0
+#   [major] in the message   major bump   v0.2.0 -> v1.0.0
+#   [skip release]           no release
+#
+# Sort is `sort -V`, not numeric: v0.9 is above v0.10 numerically but below it by
+# version. Nothing is built or uploaded; the release exists to say what changed.
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+# One release at a time per repository: the next number is read from the releases
+# that already exist, so two concurrent runs would pick the same one.
+concurrency:
+  group: release
+  cancel-in-progress: false
+
+jobs:
+  release:
+    if: "!contains(github.event.head_commit.message || '', '[skip release]')"
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Publish the next version
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+
+          MSG=$(git log -1 --pretty=%B)
+          BUMP=patch
+          if printf '%s' "$MSG" | grep -qi '\[major\]'; then BUMP=major;
+          elif printf '%s' "$MSG" | grep -qi '\[minor\]'; then BUMP=minor; fi
+
+          MAX=$(gh release list --limit 500 --json tagName --jq '.[].tagName' 2>/dev/null \
+                 | grep -E '^v[0-9]+\.[0-9]+\.[0-9]+$' | sort -V | tail -n 1 || true)
+          if [ -z "$MAX" ]; then
+            NEXT="v0.1.0"
+          else
+            V=${MAX#v}
+            MAJ=${V%%.*}
+            REST=${V#*.}
+            MIN=${REST%%.*}
+            PAT=${REST##*.}
+            case "$BUMP" in
+              major) NEXT="v$((MAJ + 1)).0.0" ;;
+              minor) NEXT="v$((MAJ)).$((MIN + 1)).0" ;;
+              *)     NEXT="v$((MAJ)).$((MIN)).$((PAT + 1))" ;;
+            esac
+          fi
+
+          if gh release view "$NEXT" >/dev/null 2>&1; then
+            echo "$NEXT already published — nothing to do"
+            exit 0
+          fi
+
+          PREV=$(git describe --tags --abbrev=0 HEAD^ 2>/dev/null || true)
+          BODY=$(mktemp)
+          {
+            echo "Released $(TZ=America/Edmonton date '+%d %b %Y, %H:%M %Z') from \`$(git rev-parse --short HEAD)\`."
+            echo
+            if [ -n "$PREV" ]; then
+              echo "Changes since \`$PREV\`:"
+              echo
+              git log --no-merges --pretty='- %s (`%h`)' "${PREV}..HEAD"
+              echo
+              echo "**Full Changelog**: https://github.com/${GITHUB_REPOSITORY}/compare/${PREV}...${NEXT}"
+            else
+              echo "Changes:"
+              echo
+              git log --no-merges --max-count=30 --pretty='- %s (`%h`)' HEAD
+              echo
+              echo "**Full Changelog**: https://github.com/${GITHUB_REPOSITORY}/commits/${NEXT}"
+            fi
+          } >>"$BODY"
+
+          gh release create "$NEXT" \
+            --target "$(git rev-parse HEAD)" \
+            --title "$NEXT" \
+            --notes-file "$BODY"
+          echo "published $NEXT"
