@@ -96,3 +96,24 @@ jobs:
             --title "$NEXT" \
             --notes-file "$BODY"
           echo "published $NEXT"
+
+          # Keep a package.json in step with the tag. The version is still derived
+          # from the releases, never read back from the file; this only stops the
+          # manifest from drifting (btlab said 0.0.12 against a v0.1.0 release for
+          # a while, portfolio1 said 1.0.0). Repos without a manifest are untouched.
+          # A push made with GITHUB_TOKEN does not start another workflow run, so
+          # this cannot loop even without the marker in the message.
+          if [ -f package.json ] && command -v jq >/dev/null 2>&1; then
+            CUR=$(jq -r '.version // empty' package.json)
+            NEW=${NEXT#v}
+            if [ -n "$CUR" ] && [ "$CUR" != "$NEW" ]; then
+              jq --arg v "$NEW" '.version = $v' package.json > package.json.tmp
+              mv package.json.tmp package.json
+              git config user.name "github-actions[bot]"
+              git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+              git add package.json
+              git commit -m "Set the package version to $NEXT [skip release]"
+              git push
+              echo "package.json -> $NEW"
+            fi
+          fi
